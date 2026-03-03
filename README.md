@@ -1,0 +1,2 @@
+# sklepCool
+Projekt zaliczeniowy
