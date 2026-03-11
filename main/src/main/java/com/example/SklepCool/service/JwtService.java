@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-
 @Service
-public class jwtService {
+public class JwtService {
+
     private static final String SECRETKEY="123456789MojSekretnyKluczDlaJWT1234567891069";
 
     public String extractUsername(String token){
@@ -30,6 +30,7 @@ public class jwtService {
                 .build()
                 .parseClaimsJws(token).getBody();
     }
+
     public <T> T extractClaim(String token, Function<Claims,T> claimsTFunction){
         final Claims claims =extractAllClaims(token);
 
