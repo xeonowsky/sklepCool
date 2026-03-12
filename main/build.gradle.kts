@@ -30,6 +30,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.1")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
