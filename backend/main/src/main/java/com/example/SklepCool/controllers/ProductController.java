@@ -24,7 +24,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public Page<ProductDto> getProducts(@PageableDefault(sort = "id", direction = Sort.Direction.ASC)
+    public Page<ProductDto> getProducts(@PageableDefault(sort = "createdAt", direction = Sort.Direction.ASC)
                                         Pageable pageable) {
         return productService.getProducts(pageable);
     }
