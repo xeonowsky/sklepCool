@@ -1,26 +1,34 @@
 package com.example.SklepCool.model;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Table(name = "product")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Product {
+
     @Id
     @GeneratedValue
     private Integer id;
-    private String name;
-    private Double price;
-    private Integer quantity;
-    private String imageURL;
 
+    private String name;
+
+    private Double price;
+
+    private Integer quantity;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    public Product(String name, Double price, Integer quantity, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.imageUrl = imageUrl;
+    }
 }
