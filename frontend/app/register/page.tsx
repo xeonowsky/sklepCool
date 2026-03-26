@@ -67,7 +67,7 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-    // Symulacja rejestracji
+
     setTimeout(() => {
       setIsLoading(false);
       setSuccess('Rejestracja pomyślna! Zaraz będziesz przekierowany do logowania...');
@@ -87,7 +87,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        {/* Header */}
+
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
             SklepCool
@@ -100,9 +100,9 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Registration Form */}
+
         <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 space-y-5">
-          {/* Name Fields */}
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -140,7 +140,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Adres Email
@@ -159,7 +158,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Phone Field */}
           <div>
             <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Numer telefonu (opcjonalnie)
@@ -178,7 +176,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Hasło
@@ -211,7 +208,6 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {/* Confirm Password Field */}
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Potwierdź hasło
@@ -236,8 +232,6 @@ export default function RegisterPage() {
               </button>
             </div>
           </div>
-
-          {/* Terms Agreement */}
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
@@ -258,7 +252,6 @@ export default function RegisterPage() {
             </label>
           </div>
 
-          {/* Messages */}
           {error && (
             <div className="flex items-center gap-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0" size={20} />
@@ -273,7 +266,6 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
@@ -289,7 +281,6 @@ export default function RegisterPage() {
             )}
           </button>
 
-          {/* Login Link */}
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
             Masz już konto?{' '}
             <Link href="/login" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">

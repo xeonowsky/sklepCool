@@ -1,6 +1,7 @@
 package com.example.SklepCool.settings;
 
-import com.example.SklepCool.services.jwtService;
+import com.example.SklepCool.service.JwtService;
+
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,7 +26,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final jwtService userJwtService;
+    private final JwtService userJwtService;
     private final UserDetailsService userDetailsService;
 
     private String getTokenFromCookies(HttpServletRequest request) {
