@@ -191,7 +191,7 @@ export default function Home() {
             <input
               type="email"
               placeholder="Twój adres e-mail"
-              className="flex-1 px-6 py-4 rounded-2xl text-slate-900 focus:ring-4 ring-blue-300 outline-none"
+              className=" bg-white flex-1 px-6 py-4 rounded-2xl text-slate-900 focus:ring-4 ring-blue-300 outline-none"
             />
             <button className="bg-slate-950 text-white px-8 py-4 rounded-2xl font-bold hover:bg-slate-800 transition">
               Zapisz się
