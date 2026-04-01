@@ -1,33 +1,99 @@
 package com.example.SklepCool.service;
 
-
+import com.example.SklepCool.dto.CartDto;
+import com.example.SklepCool.exception.NotFoundException;
+import com.example.SklepCool.mapper.CartItemMapper;
+import com.example.SklepCool.mapper.ProductMapper;
 import com.example.SklepCool.model.Cart;
-import com.example.SklepCool.model.Product;
-import jakarta.servlet.http.HttpSession;
+import com.example.SklepCool.model.CartItem;
+import com.example.SklepCool.repository.CartRepository;
+import com.example.SklepCool.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
-    private static final String CART_SESSION_KEY = "cart";
+    private final CartRepository repository;
+    private final ProductRepository productRepository;
+    private final UserService userService;
+    private final CartItemMapper cartItemMapper;
 
-    public Cart getCart(HttpSession session){
-        Cart cart = (Cart) session.getAttribute(CART_SESSION_KEY);
+    public CartDto getCartByUserId(Authentication auth) {
+        var userId = getUserId(auth);
+        var cartEntity = getCart(userId);
 
-        if(cart == null){
-            cart = new Cart();
-            session.setAttribute(CART_SESSION_KEY, cart);
+        var cartItemsDto = cartItemMapper.mapToDtoList(cartEntity.getItems());
+
+        return new CartDto(cartEntity.getId(), cartItemsDto);
+    }
+
+    public void addProduct(Authentication auth, Integer productId) {
+        var userId = getUserId(auth);
+        var cart = getCart(userId);
+        var product = productRepository.getReferenceById(productId);
+
+        var item = cart.getItems().stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseGet(() -> {
+                    var newItem = new CartItem();
+                    newItem.setCart(cart);
+                    newItem.setProduct(product);
+                    newItem.setQuantity(0);
+                    cart.getItems().add(newItem);
+                    return newItem;
+                });
+
+        item.setQuantity(item.getQuantity() + 1);
+        repository.save(cart);
+    }
+
+    public void decreaseProduct(Authentication auth, Integer productId) {
+        var userId = getUserId(auth);
+        var cart = getCart(userId);
+
+        var item = cart.getItems().stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Product not in cart"));
+
+        if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+        } else {
+            cart.getItems().remove(item);
         }
 
-        return cart;
+        repository.save(cart);
     }
 
-    public void addProduct(HttpSession session, Product product){
-        Cart cart = getCart(session);
-        cart.addProduct(product);
+    public void removeProduct(Authentication auth, Integer productId) {
+        var userId = getUserId(auth);
+        var cart = getCart(userId);
+        cart.getItems().removeIf(i -> i.getProduct().getId().equals(productId));
+        repository.save(cart);
     }
 
-    public void clearCart(HttpSession session){
-        getCart(session).clearCart();
+    public void clearCart(Authentication auth) {
+        var userId = getUserId(auth);
+        var cart = getCart(userId);
+        cart.getItems().clear();
+        repository.save(cart);
+    }
+
+    private Integer getUserId(Authentication auth) {
+        var email = auth.getName();
+        return userService.findByEmail(email).getId();
+    }
+
+    private Cart getCart(Integer userId) {
+        return repository.findByUserId(userId)
+                .orElseGet(() -> {
+                    var cart = new Cart();
+                    cart.setUserId(userId);
+                    return repository.save(cart);
+                });
     }
 }

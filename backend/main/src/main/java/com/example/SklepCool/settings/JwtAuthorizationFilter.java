@@ -34,13 +34,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (cookies != null) {
             for (Cookie cook : cookies) {
                 if ("jwt".equals((cook.getName()))) {
-
                     return cook.getValue();
                 }
             }
-
         }
-
         return null;
     }
 

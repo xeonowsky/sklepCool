@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.annotationProcessor
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.4.2-SNAPSHOT"
@@ -25,22 +28,24 @@ repositories {
 }
 
 dependencies {
-	testImplementation("com.h2database:h2:1.3.148")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.1")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("com.h2database:h2")
 	annotationProcessor("org.projectlombok:lombok")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("com.h2database:h2:1.3.148")
 }
 
 tasks.withType<Test> {
