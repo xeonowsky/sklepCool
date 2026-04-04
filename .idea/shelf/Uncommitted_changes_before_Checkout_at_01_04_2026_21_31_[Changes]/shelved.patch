@@ -1,0 +1,22 @@
+Index: backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.SklepCool.controllers;\r\n\r\nimport com.example.SklepCool.dto.ProductDto;\r\nimport com.example.SklepCool.dto.request.ProductRequest;\r\nimport com.example.SklepCool.service.ProductService;\r\nimport jakarta.validation.Valid;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.domain.Sort;\r\nimport org.springframework.data.web.PageableDefault;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\n@RestController\r\n@RequestMapping(\"/api/v1/products\")\r\n@RequiredArgsConstructor\r\npublic class ProductController {\r\n\r\n    private final ProductService productService;\r\n\r\n    @GetMapping(\"/{id}\")\r\n    public ProductDto getProduct(@PathVariable int id) {\r\n        return productService.getProductById(id);\r\n    }\r\n\r\n    @GetMapping\r\n    public Page<ProductDto> getProducts(@PageableDefault(sort = \"createdAt\", direction = Sort.Direction.ASC)\r\n                                        Pageable pageable) {\r\n        return productService.getProducts(pageable);\r\n    }\r\n\r\n    @PostMapping\r\n    public void saveProduct(@RequestBody @Valid ProductRequest product) {\r\n        productService.save(product);\r\n    }\r\n\r\n    @PutMapping(\"/{id}\")\r\n    public void updateProduct(@PathVariable int id, @RequestBody @Valid ProductRequest product) {\r\n        productService.updateProduct(id, product);\r\n    }\r\n\r\n    @DeleteMapping(\"/{id}\")\r\n    public void deleteProduct(@PathVariable int id) {\r\n        productService.deleteProductById(id);\r\n    }\r\n\r\n}\r\n
+===================================================================
+diff --git a/backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java b/backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java
+--- a/backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java	(revision ab3853633f238bf92adaa30c8f1a9d0dd2ba05a5)
++++ b/backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java	(date 1774465731026)
+@@ -9,11 +9,13 @@
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.data.domain.Sort;
+ import org.springframework.data.web.PageableDefault;
++import org.springframework.security.access.prepost.PreAuthorize;
+ import org.springframework.web.bind.annotation.*;
+ 
+ @RestController
+ @RequestMapping("/api/v1/products")
+ @RequiredArgsConstructor
++@PreAuthorize("hasRole('ADMIN')")
+ public class ProductController {
+ 
+     private final ProductService productService;
