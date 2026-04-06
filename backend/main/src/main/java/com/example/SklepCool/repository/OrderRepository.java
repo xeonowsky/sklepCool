@@ -1,15 +1,11 @@
 package com.example.SklepCool.repository;
 
-import com.example.SklepCool.model.Cart;
+import com.example.SklepCool.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, UUID> {
-
-    Optional<Cart> findByUserId(Integer userId);
-
+public interface OrderRepository extends JpaRepository<Order, UUID> {
 }

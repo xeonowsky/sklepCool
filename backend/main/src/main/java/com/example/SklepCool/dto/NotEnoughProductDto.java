@@ -1,20 +1,18 @@
 package com.example.SklepCool.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CartDto {
+public class NotEnoughProductDto {
 
-    private UUID id;
-    private List<CartItemDto> items;
+    private UUID productId;
+    private Integer requestedQuantity;
+    private Integer remainderQuantity;
 
 }

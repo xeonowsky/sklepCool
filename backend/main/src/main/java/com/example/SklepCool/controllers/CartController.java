@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cart")
@@ -19,17 +21,17 @@ public class CartController {
     }
 
     @PostMapping("/{productId}")
-    public void addProduct(Authentication auth, @PathVariable Integer productId) {
+    public void addProduct(Authentication auth, @PathVariable UUID productId) {
         cartService.addProduct(auth, productId);
     }
 
     @PutMapping("/decrease/{productId}")
-    public void decreaseProduct(Authentication auth, @PathVariable Integer productId) {
+    public void decreaseProduct(Authentication auth, @PathVariable UUID productId) {
         cartService.decreaseProduct(auth, productId);
     }
 
     @DeleteMapping("/{productId}")
-    public void removeProduct(Authentication auth, @PathVariable Integer productId) {
+    public void removeProduct(Authentication auth, @PathVariable UUID productId) {
         cartService.removeProduct(auth, productId);
     }
 

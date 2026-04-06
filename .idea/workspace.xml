@@ -5,7 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad4ec7dd-dcc8-4759-8404-849d15cdd82b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/controllers/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/controllers/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/controllers/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/CartDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/CartDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/CartItemDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/CartItemDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/ProductDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/ProductDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/dto/UserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/model/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/model/Cart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/model/CartItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/model/CartItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/model/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/repository/CartRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/repository/CartRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/repository/ProductRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main/src/main/java/com/example/SklepCool/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +75,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "order-feature",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Developer/Java_Projects/university/sklepCool",
     "nodejs_package_manager_path": "npm",
@@ -105,10 +119,22 @@
       <workItem from="1774094771542" duration="105000" />
       <workItem from="1774389676054" duration="124000" />
       <workItem from="1775071866745" duration="58000" />
+      <workItem from="1775477124819" duration="326000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
