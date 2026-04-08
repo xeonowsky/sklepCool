@@ -10,13 +10,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository repository;
 
-    public ProductDto getProductById(int id) {
+    public ProductDto getProductById(UUID id) {
         var product = getById(id);
 
         return mapToDto(product);
@@ -27,13 +29,20 @@ public class ProductService {
                 .map(this::mapToDto);
     }
 
+    protected Product findByIdForUpdate(UUID id) {
+        return repository.findByIdForUpdate(id);
+    }
 
     public void save(ProductRequest product) {
         var toSave = new Product(product.getName(), product.getPrice(), product.getQuantity(), product.getImageUrl());
         repository.save(toSave);
     }
 
-    public void updateProduct(Integer id, ProductRequest request) {
+    protected void save(Product product) {
+        repository.save(product);
+    }
+
+    public void updateProduct(UUID id, ProductRequest request) {
         var product = getById(id);
 
         product.setName(request.getName());
@@ -44,15 +53,15 @@ public class ProductService {
         repository.save(product);
     }
 
-    public void deleteProductById(int id) {
+    public void deleteProductById(UUID id) {
         var product = getById(id);
 
         repository.delete(product);
     }
 
-    private Product getById(Integer id) {
+    private Product getById(UUID id) {
         return repository.findById(id).orElseThrow(() ->
-                new NotFoundException("Product with id: %d not found".formatted(id)));
+                new NotFoundException("Product with id: %s not found".formatted(id)));
     }
 
     private ProductDto mapToDto(Product product) {

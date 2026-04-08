@@ -12,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -21,12 +23,12 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/{id}")
-    public ProductDto getProduct(@PathVariable int id) {
+    public ProductDto getProduct(@PathVariable UUID id) {
         return productService.getProductById(id);
     }
 
     @GetMapping
-    public Page<ProductDto> getProducts(@PageableDefault(sort = "createdAt", direction = Sort.Direction.ASC)
+    public Page<ProductDto> getProducts(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC)
                                         Pageable pageable) {
         return productService.getProducts(pageable);
     }
@@ -37,12 +39,12 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public void updateProduct(@PathVariable int id, @RequestBody @Valid ProductRequest product) {
+    public void updateProduct(@PathVariable UUID id, @RequestBody @Valid ProductRequest product) {
         productService.updateProduct(id, product);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable int id) {
+    public void deleteProduct(@PathVariable UUID id) {
         productService.deleteProductById(id);
     }
 

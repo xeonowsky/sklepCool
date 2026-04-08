@@ -4,6 +4,7 @@ import com.example.SklepCool.exception.UserNotFoundException;
 import com.example.SklepCool.model.User;
 import com.example.SklepCool.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,12 @@ public class UserService {
 
     public boolean isExistByEmail(String email) {
         return repository.existsByEmail(email);
+    }
+
+    public Integer getUserIdByAuth(Authentication auth) {
+        var email = auth.getName();
+        return repository.findByEmail(email).map(User::getId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: %s".formatted(email)));
     }
 
     public void save(User user) {

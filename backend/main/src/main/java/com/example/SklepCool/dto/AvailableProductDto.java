@@ -1,17 +1,19 @@
 package com.example.SklepCool.dto;
 
-import com.example.SklepCool.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class AvailableProductDto {
 
-    private Integer id;
-    private String email;
-    private Role role;
+    private UUID id;
+    private String name;
+    private Double price;
+    private Integer quantity;
 
 }
