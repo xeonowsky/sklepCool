@@ -4,11 +4,9 @@ import com.example.SklepCool.auth.AuthenticationResponse;
 import com.example.SklepCool.service.AuthenticationService;
 import com.example.SklepCool.auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3001")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")

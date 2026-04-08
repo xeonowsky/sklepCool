@@ -1,10 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle, Phone } from 'react-feather';
+import { email, set } from 'zod';
+import { da } from 'zod/locales';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -59,23 +63,46 @@ export default function RegisterPage() {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
+    
     e.preventDefault();
-
-    if (!validateForm()) {
+    if (!validateForm) {
       return;
     }
 
     setIsLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }),
+      });
 
-    setTimeout(() => {
+      if (!response.ok) {
+        throw new Error('Bląd rejestracji');
+      }
+      const data = await response.json();
+      setSuccess('Konto utworzone');
+
+      setTimeout(()=>{
+        router.push('/login')
+      })
+    } catch (err: any) {
+      setError(err.message || 'Coś poszło nie tak');
+    } finally {
       setIsLoading(false);
-      setSuccess('Rejestracja pomyślna! Zaraz będziesz przekierowany do logowania...');
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 1500);
-    }, 1500);
-  };
+    }
+  }
 
   const passwordStrength = formData.password.length >= 8 ? 'strong' : formData.password.length >= 5 ? 'medium' : 'weak';
   const strengthColors = {

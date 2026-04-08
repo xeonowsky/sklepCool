@@ -28,6 +28,23 @@ export default function LoginPage() {
     }
 
     setIsLoading(true);
+    try{
+      const response = await fetch('http://localhost:8080/api/v1/login',{
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({
+          email:email,
+          password:password,
+        }),
+
+      });
+      if (!response.ok) {
+        throw new Error('Bląd rejestracji');
+      }
+
+    
 
     setTimeout(() => {
       setIsLoading(false);
@@ -36,6 +53,11 @@ export default function LoginPage() {
         window.location.href = '/';
       }, 1500);
     }, 1500);
+     } catch (err: any) {
+      setError(err.message || 'Coś poszło nie tak');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
