@@ -91,6 +91,7 @@ export default function RegisterPage() {
       if (!response.ok) {
         throw new Error('Bląd rejestracji');
       }
+      
       const data = await response.json();
       setSuccess('Konto utworzone');
 

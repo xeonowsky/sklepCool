@@ -13,7 +13,7 @@ export default function CartPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   const fetchCart = async () => {
-    const res = await fetch("http://localhost:8080/api/cart", {
+    const res = await fetch("http://localhost:8080/api/v1/cart", {
       credentials: "include",
     });
 

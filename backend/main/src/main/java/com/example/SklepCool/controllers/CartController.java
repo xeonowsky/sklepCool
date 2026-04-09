@@ -1,13 +1,16 @@
 package com.example.SklepCool.controllers;
 
 import com.example.SklepCool.dto.CartDto;
+import com.example.SklepCool.dto.ProductDto;
 import com.example.SklepCool.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:3001")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cart")
@@ -19,6 +22,7 @@ public class CartController {
     public CartDto getCart(Authentication auth) {
         return cartService.getCartByUserId(auth);
     }
+
 
     @PostMapping("/{productId}")
     public void addProduct(Authentication auth, @PathVariable UUID productId) {

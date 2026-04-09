@@ -3,55 +3,78 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+  rating: number;
+}
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-
-  const products = [
-    { id: 1, name: 'Elegancka Koszulka', price: '49.99 zł', category: 'Odzież', image: '🎽', rating: 4.8 },
-    { id: 2, name: 'Spodnie Denimu', price: '129.99 zł', category: 'Odzież', image: '👖', rating: 4.7 },
-    { id: 3, name: 'Stylowe Buty', price: '189.99 zł', category: 'Obuwie', image: '👟', rating: 4.9 },
-    { id: 4, name: 'Klasyczny Kapelusz', price: '59.99 zł', category: 'Akcesoria', image: '🧢', rating: 4.6 },
-  ];
-
-  const categories = [
-    { name: 'Odzież', icon: '👕' },
-    { name: 'Obuwie', icon: '👟' },
-    { name: 'Akcesoria', icon: '👜' },
-    { name: 'Elektronika', icon: '💻' },
-  ];
+  const [products, setProducts] = useState<Product[]>([]); // Dynamiczna lista
+  const [isLoading, setIsLoading] = useState(true);
 
   // --- LOGIKA API ---
-  const fetchCart = async () => {
+
+  // 1. Pobieranie produktów na stronę główną
+  const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/cart", { credentials: "include" });
+      // Zakładamy, że masz taki endpoint w Springu
+      const res = await fetch("http://localhost:8080/api/v1/products");
       if (res.ok) {
         const data = await res.json();
-        setCartCount(data.products.length);
+        setProducts(data);
       }
     } catch (error) {
-      console.error("Błąd pobierania koszyka:", error);
+      console.error("Błąd pobierania produktów:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const addToCart = async (product: any) => {
+  // 2. Pobieranie stanu koszyka
+  const fetchCart = async () => {
     try {
-      await fetch("http://localhost:8080/api/cart/add", {
+      const res = await fetch("http://localhost:8080/api/v1/cart", { 
+        credentials: "include" 
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Zakładając, że CartDto ma pole products (tablica)
+        setCartCount(data.products?.length || 0);
+      }
+    } catch (error) {
+      console.warn("Koszyk nieosiągalny (prawdopodobnie brak zalogowania)");
+    }
+  };
+
+  const addToCart = async (productId: string) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(product),
       });
-      fetchCart(); 
+      
+      if (res.ok) {
+        alert("Dodano do koszyka!");
+        fetchCart(); 
+      } else {
+        alert("Zaloguj się, aby dodać produkt do koszyka");
+      }
     } catch (error) {
       console.error("Błąd dodawania do koszyka:", error);
     }
   };
 
   useEffect(() => {
+    fetchProducts();
     fetchCart();
   }, []);
-
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       
@@ -132,54 +155,46 @@ export default function Home() {
       </section>
 
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="flex justify-between items-end mb-10">
-          <div>
-            <h2 className="text-3xl font-bold">Kategorie</h2>
-            <div className="h-1 w-20 bg-blue-600 mt-2 rounded-full"></div>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {categories.map((cat) => (
-            <Link key={cat.name} href="#" className="group bg-gray-50 dark:bg-slate-900 border border-transparent dark:border-slate-800 p-8 rounded-2xl text-center hover:border-blue-500 hover:shadow-2xl transition-all">
-              <div className="text-5xl mb-4 group-hover:scale-125 transition-transform duration-300">{cat.icon}</div>
-              <p className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-sm">{cat.name}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
 
       {/* PRODUCTS */}
       <section className="bg-gray-50 dark:bg-slate-900/50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-10">Polecane dla Ciebie</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product) => (
-              <div key={product.id} className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group">
-                <div className="aspect-square bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-7xl group-hover:scale-110 transition-transform duration-500">
-                  {product.image}
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase">{product.category}</span>
-                    <span className="text-sm font-medium text-yellow-500 flex items-center">★ {product.rating}</span>
-                  </div>
-                  <h3 className="font-bold text-lg mb-4 h-12 line-clamp-2">{product.name}</h3>
-                  <div className="flex items-center justify-between mt-auto">
-                    <span className="text-xl font-black text-slate-900 dark:text-white">{product.price}</span>
-                    <button 
-                      onClick={() => addToCart(product)}
-                      className="bg-slate-900 dark:bg-blue-600 text-white p-3 rounded-xl hover:scale-110 active:scale-95 transition-all"
-                    >
-                      Dodaj +
-                    </button>
-                  </div>
-                </div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 className="text-3xl font-bold mb-10">Polecane dla Ciebie</h2>
+    
+    {isLoading ? (
+      <div className="flex justify-center py-20 text-blue-600 font-bold">Ładowanie produktów...</div>
+    ) : products.length === 0 ? (
+      <div className="text-center py-20">Nie znaleziono żadnych produktów w sklepie.</div>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.map((product) => (
+          <div key={product.id} className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group">
+            {/* Tutaj renderowanie karty produktu - bez zmian względem Twojego kodu */}
+            <div className="aspect-square bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-7xl group-hover:scale-110 transition-transform duration-500">
+              {product.image || '📦'} 
+            </div>
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase">{product.category}</span>
+                <span className="text-sm font-medium text-yellow-500 flex items-center">★ {product.rating}</span>
               </div>
-            ))}
+              <h3 className="font-bold text-lg mb-4 h-12 line-clamp-2">{product.name}</h3>
+              <div className="flex items-center justify-between mt-auto">
+                <span className="text-xl font-black text-slate-900 dark:text-white">{product.price} zł</span>
+                <button 
+                  onClick={() => addToCart(product.id)}
+                  className="bg-slate-900 dark:bg-blue-600 text-white p-3 rounded-xl hover:scale-110 active:scale-95 transition-all"
+                >
+                  Dodaj +
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
 
 
       <section className="max-w-7xl mx-auto px-4 py-20">

@@ -1,60 +1,62 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'react-feather';
+import Link from "next/link";
+import { useState } from "react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+} from "react-feather";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     if (!email || !password) {
-      setError('Proszę wypełnić wszystkie pola');
+      setError("Proszę wypełnić wszystkie pola");
       return;
     }
 
-    if (!email.includes('@')) {
-      setError('Proszę wpisać prawidłowy adres email');
+    if (!email.includes("@")) {
+      setError("Proszę wpisać prawidłowy adres email");
       return;
     }
 
     setIsLoading(true);
-    try{
-      const response = await fetch('http://localhost:8080/api/v1/login',{
-        method:'POST',
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({
-          email:email,
-          password:password,
+        credentials: "include",
+        body: JSON.stringify({
+          email: email,
+          password: password,
         }),
-
       });
+
       if (!response.ok) {
-        throw new Error('Bląd rejestracji');
+        throw new Error("Błędne dane logowania");
       }
 
-    
+      setSuccess("Logowanie pomyślne!");
 
-    setTimeout(() => {
-      setIsLoading(false);
-      setSuccess('Logowanie pomyślne! Przekierowywanie...');
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1500);
-    }, 1500);
-     } catch (err: any) {
-      setError(err.message || 'Coś poszło nie tak');
+      window.location.href = "/";
+    } catch (err: any) {
+      setError(err.message || "Coś poszło nie tak");
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +67,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+          <Link
+            href="/"
+            className="inline-block text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
+          >
             SklepCool
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -76,15 +81,22 @@ export default function LoginPage() {
           </p>
         </div>
 
-
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 space-y-6">
-
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 space-y-6"
+        >
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+            >
               Adres Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Mail
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 id="email"
                 type="email"
@@ -96,14 +108,20 @@ export default function LoginPage() {
             </div>
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+            >
               Hasło
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Lock
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Wpisz swoje hasło"
@@ -124,25 +142,37 @@ export default function LoginPage() {
                 type="checkbox"
                 className="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded focus:ring-2 focus:ring-blue-500"
               />
-              <span className="text-gray-700 dark:text-gray-300">Zapamiętaj mnie</span>
+              <span className="text-gray-700 dark:text-gray-300">
+                Zapamiętaj mnie
+              </span>
             </label>
-            <Link href="/forgot-password" className="text-blue-600 dark:text-blue-400 hover:underline">
+            <Link
+              href="/forgot-password"
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
               Zapomniałeś hasło?
             </Link>
           </div>
 
-
           {error && (
             <div className="flex items-center gap-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-              <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0" size={20} />
+              <AlertCircle
+                className="text-red-600 dark:text-red-400 flex-shrink-0"
+                size={20}
+              />
               <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
             </div>
           )}
 
           {success && (
             <div className="flex items-center gap-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-              <CheckCircle className="text-green-600 dark:text-green-400 flex-shrink-0" size={20} />
-              <p className="text-sm text-green-700 dark:text-green-300">{success}</p>
+              <CheckCircle
+                className="text-green-600 dark:text-green-400 flex-shrink-0"
+                size={20}
+              />
+              <p className="text-sm text-green-700 dark:text-green-300">
+                {success}
+              </p>
             </div>
           )}
 
@@ -157,19 +187,20 @@ export default function LoginPage() {
                 Logowanie...
               </>
             ) : (
-              'Zaloguj się'
+              "Zaloguj się"
             )}
           </button>
 
-
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-            Nie masz konta?{' '}
-            <Link href="/register" className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+            Nie masz konta?{" "}
+            <Link
+              href="/register"
+              className="font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+            >
               Zarejestruj się
             </Link>
           </div>
         </form>
-
 
         <div className="mt-8">
           <div className="relative mb-6">
