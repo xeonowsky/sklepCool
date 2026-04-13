@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -36,6 +37,11 @@ public class JwtService {
         final Claims claims =extractAllClaims(token);
 
         return claimsTFunction.apply(claims);
+    }
+
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", List.class);
     }
 
     private Key getSignKey() {

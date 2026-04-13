@@ -21,8 +21,10 @@ public class SpringConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+        http.cors()
+                .and()
+                .csrf()
+                .disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/register", "/api/v1/login").permitAll()
                         .anyRequest().authenticated()

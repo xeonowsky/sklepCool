@@ -44,10 +44,16 @@ export default function AdminProducts() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
+
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json',
+       
+         },
+        
         body: JSON.stringify(formData),
 
       });
@@ -68,7 +74,8 @@ export default function AdminProducts() {
     try {
       const res = await fetch(`${API_URL}/${id}`, { 
         method: 'DELETE',
-        // credentials: "include" 
+        credentials: 'include',
+
       });
       if (res.ok) fetchProducts();
     } catch (err) {

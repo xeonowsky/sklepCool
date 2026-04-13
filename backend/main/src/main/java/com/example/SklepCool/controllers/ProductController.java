@@ -13,9 +13,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-@CrossOrigin(origins = "http://localhost:3001")
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/v1/products")
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 
 public class ProductController {

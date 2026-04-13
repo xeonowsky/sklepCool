@@ -33,6 +33,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.1")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.postgresql:postgresql:42.7.10")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	compileOnly("org.projectlombok:lombok")
