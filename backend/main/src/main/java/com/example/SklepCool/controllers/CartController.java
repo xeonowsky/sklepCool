@@ -20,6 +20,7 @@ public class CartController {
 
     @GetMapping
     public CartDto getCart(Authentication auth) {
+        System.out.println("USER: " + auth);
         return cartService.getCartByUserId(auth);
     }
 

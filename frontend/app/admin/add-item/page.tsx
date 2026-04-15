@@ -1,14 +1,9 @@
 'use client';
 
+import { Product } from '@/app/lib/product';
 import { useState, useEffect } from 'react';
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl: string;
-}
+
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -89,7 +84,6 @@ export default function AdminProducts() {
 
       <div className="grid lg:grid-cols-3 gap-10">
         
-        {/* FORMULARZ DODAWANIA */}
         <div className="lg:col-span-1">
           <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-24">
             <h2 className="text-xl font-bold mb-6">Dodaj nowy produkt</h2>
@@ -152,7 +146,6 @@ export default function AdminProducts() {
           </form>
         </div>
 
-        {/* LISTA PRODUKTÓW */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table className="w-full text-left border-collapse">

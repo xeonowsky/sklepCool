@@ -2,15 +2,9 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { Product } from './lib/product';
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  image: string;
-  rating: number;
-}
+
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,27 +14,33 @@ export default function Home() {
 
   // --- LOGIKA API ---
 
-  // 1. Pobieranie produktów na stronę główną
-  const fetchProducts = async () => {
-    try {
-      // Zakładamy, że masz taki endpoint w Springu
-      const res = await fetch("http://localhost:8080/api/v1/products");
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error("Błąd pobierania produktów:", error);
-    } finally {
-      setIsLoading(false);
+const fetchProducts = async () => {
+  try {
+    const res = await fetch("http://localhost:8080/api/v2/products",{
+
+        credentials: "include" ,
+        headers: { 'Content-Type': 'application/json'},
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setProducts(data.content);
     }
-  };
+  } catch (error) {
+    console.error("Błąd pobierania produktów:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // 2. Pobieranie stanu koszyka
   const fetchCart = async () => {
+
     try {
-      const res = await fetch("http://localhost:8080/api/v1/cart", { 
-        credentials: "include" 
+      const res = await fetch("http://localhost:8080/api/v1/cart", {
+        method:"GET",
+        credentials: "include" ,
+        headers: { 'Content-Type': 'application/json'},
+        
       });
       if (res.ok) {
         const data = await res.json();
