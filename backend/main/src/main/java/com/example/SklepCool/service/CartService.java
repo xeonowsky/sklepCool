@@ -92,7 +92,7 @@ public class CartService {
     }
 
     private Cart getCart(Integer userId) {
-        return repository.findByUserId(userId)
+        return repository.findByUserIdWithItems(userId)
                 .orElseGet(() -> {
                     var cart = new Cart();
                     cart.setUserId(userId);
