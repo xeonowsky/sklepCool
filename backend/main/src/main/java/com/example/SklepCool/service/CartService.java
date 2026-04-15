@@ -48,8 +48,10 @@ public class CartService {
                     return newItem;
                 });
 
+        System.out.println("Saving item: cartId=" + cart.getId() + ", productId=" + productId);
         item.setQuantity(item.getQuantity() + 1);
         repository.save(cart);
+        System.out.println("Saved. Items in cart: " + cart.getItems().size());
     }
 
     public void decreaseProduct(Authentication auth, UUID productId) {
@@ -90,7 +92,7 @@ public class CartService {
     }
 
     private Cart getCart(Integer userId) {
-        return repository.findByUserId(userId)
+        return repository.findByUserIdWithItems(userId)
                 .orElseGet(() -> {
                     var cart = new Cart();
                     cart.setUserId(userId);

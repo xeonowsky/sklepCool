@@ -38,8 +38,8 @@ public class AuthenticationService {
                 .build();
 
         try {
-            var jwToken = jwtService.generateToken(user);
             userService.save(user);
+            var jwToken = jwtService.generateToken(user);
             return new AuthenticationResponse(jwToken);
         } catch (Exception e) {
             throw new AuthentificationFailedException("Failed during registration process",
@@ -47,22 +47,27 @@ public class AuthenticationService {
         }
     }
 
-    public void authenticate(HttpServletResponse response, AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(HttpServletResponse response, AuthenticationRequest request) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    request.getEmail(),
-                    request.getPassword()));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
 
             var user = userService.findByEmail(request.getEmail());
-
             var jwtToken = jwtService.generateToken(user);
+
             CookieUtil.addJwtCookie(response, jwtToken);
 
-            new AuthenticationResponse(jwtToken);
+            return new AuthenticationResponse(jwtToken);
 
         } catch (Exception e) {
-            throw new AuthentificationFailedException("Failed during authentication process",
-                    HttpStatus.UNAUTHORIZED.value());
+            throw new AuthentificationFailedException(
+                    "Failed during authentication process",
+                    HttpStatus.UNAUTHORIZED.value()
+            );
         }
     }
 }
