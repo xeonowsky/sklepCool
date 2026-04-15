@@ -21,7 +21,7 @@ export default function CartPage() {
       }
 
       const data = await res.json();
-      setProducts(data.products || []);
+      setProducts(data.items?.map((item: any) => item.product) || []);
     } catch (err) {
       console.error("Błąd koszyka:", err);
       setProducts([]);
@@ -33,6 +33,7 @@ export default function CartPage() {
   // 🔥 USUWANIE PRODUKTU
   const removeFromCart = async (productId: string) => {
     try {
+      
       await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
         method: "DELETE",
         credentials: "include",
@@ -78,12 +79,12 @@ export default function CartPage() {
                 >
                   <div className="flex items-center gap-6">
                     <div className="w-20 h-20 bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-3xl rounded-xl">
-                      {p.image || '📦'}
+                      {p.name || '📦'}
                     </div>
 
                     <div>
                       <h2 className="font-bold text-lg">{p.name}</h2>
-                      <p className="text-gray-500 text-sm">{p.category}</p>
+                      <p className="text-gray-500 text-sm">{p.price}</p>
                     </div>
                   </div>
 
