@@ -44,7 +44,7 @@ const fetchProducts = async () => {
       });
       if (res.ok) {
         const data = await res.json();
-        // Zakładając, że CartDto ma pole products (tablica)
+
         setCartCount(data.products?.length || 0);
       }
     } catch (error) {
@@ -171,12 +171,11 @@ const fetchProducts = async () => {
           <div key={product.id} className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group">
             {/* Tutaj renderowanie karty produktu - bez zmian względem Twojego kodu */}
             <div className="aspect-square bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-7xl group-hover:scale-110 transition-transform duration-500">
-              {product.image || '📦'} 
+              📦
             </div>
             <div className="p-6">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase">{product.category}</span>
-                <span className="text-sm font-medium text-yellow-500 flex items-center">★ {product.rating}</span>
+
               </div>
               <h3 className="font-bold text-lg mb-4 h-12 line-clamp-2">{product.name}</h3>
               <div className="flex items-center justify-between mt-auto">
