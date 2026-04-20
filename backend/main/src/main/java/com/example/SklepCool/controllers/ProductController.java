@@ -17,7 +17,6 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/v1/products")
-@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 
 public class ProductController {
@@ -36,16 +35,19 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public void saveProduct(@RequestBody @Valid ProductRequest product) {
         productService.save(product);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateProduct(@PathVariable UUID id, @RequestBody @Valid ProductRequest product) {
         productService.updateProduct(id, product);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteProduct(@PathVariable UUID id) {
         productService.deleteProductById(id);
     }
