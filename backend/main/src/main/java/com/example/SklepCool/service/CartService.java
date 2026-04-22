@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,10 +50,8 @@ public class CartService {
                     return newItem;
                 });
 
-        System.out.println("Saving item: cartId=" + cart.getId() + ", productId=" + productId);
         item.setQuantity(item.getQuantity() + 1);
         repository.save(cart);
-        System.out.println("Saved. Items in cart: " + cart.getItems().size());
     }
 
     public void decreaseProduct(Authentication auth, UUID productId) {
@@ -84,6 +84,14 @@ public class CartService {
         var cart = getCart(userId);
         cart.getItems().clear();
         repository.save(cart);
+    }
+
+    public void clearCart(List<Cart> toDelete) {
+        repository.deleteAllInBatch(toDelete);
+    }
+
+    public List<Cart> getCartsByUpdatedAtBefore(LocalDateTime before) {
+        return repository.findAllByUpdatedAtBefore(before);
     }
 
     protected Cart getCartByUserId(Integer userId) {
