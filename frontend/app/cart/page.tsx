@@ -1,12 +1,49 @@
 'use client';
 
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Product } from '../lib/product';
 
 export default function CartPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
+  const makeOrder = async () => {
+    setIsCreatingOrder(true);
+    try {
+      const res = await fetch("http://localhost:8080/api/v1/order", {
+        method: "POST",
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        alert("✅ Zamówienie utworzone pomyślnie!");
+        setProducts([]);
+        router.push('/');
+      } else {
+        const errorData = await res.text();
+        console.error(`Błąd ${res.status}:`, errorData);
+        
+        if (res.status === 403) {
+          alert("❌ Błąd 403: Brak uprawnień. Sprawdź czy jesteś zalogowany i czy Twoje konto ma uprawnienia.");
+        } else if (res.status === 401) {
+          alert("❌ Błąd 401: Niezalogowany. Zaloguj się ponownie.");
+        } else {
+          alert(`❌ Błąd serwera ${res.status}. Sprawdź konsolę (F12).`);
+        }
+      }
+    } catch (error) {
+      console.error("Błąd zamówienia:", error);
+      alert("❌ Błąd połączenia z serwerem");
+    } finally {
+      setIsCreatingOrder(false);
+    }
+  };
   // 🔥 FETCH KOSZYKA
   const fetchCart = async () => {
     try {
@@ -54,8 +91,15 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 p-8">
       <div className="max-w-4xl mx-auto">
-        
-        <h1 className="text-4xl font-black mb-10">🛒 Twój koszyk</h1>
+        <div className="flex items-center justify-between mb-10">
+          <h1 className="text-4xl font-black">🛒 Twój koszyk</h1>
+          <Link 
+            href="/" 
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all hover:shadow-lg"
+          >
+            ← Powrót do sklepu
+          </Link>
+        </div>
 
         {/* LOADING */}
         {isLoading ? (
@@ -103,14 +147,28 @@ export default function CartPage() {
             </div>
 
             {/* PODSUMOWANIE */}
-            <div className="mt-10 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg flex justify-between items-center">
-              <span className="text-xl font-bold">
-                Razem:
-              </span>
+            <div className="mt-10 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-xl font-bold">
+                  Razem:
+                </span>
 
-              <span className="text-2xl font-black text-blue-600">
-                {total} zł
-              </span>
+                <span className="text-2xl font-black text-blue-600">
+                  {total} zł
+                </span>
+              </div>
+
+              <button
+                onClick={makeOrder}
+                disabled={isCreatingOrder}
+                className={`w-full py-4 px-6 rounded-xl font-bold text-white text-lg transition-all ${
+                  isCreatingOrder
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-700 hover:shadow-lg active:scale-95'
+                }`}
+              >
+                {isCreatingOrder ? '⏳ Tworzenie zamówienia...' : ' Złóż zamówienie'}
+              </button>
             </div>
           </>
         )}
