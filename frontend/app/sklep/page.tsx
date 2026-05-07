@@ -141,8 +141,12 @@ export default function ShopPage() {
                     key={product.id}
                     className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group flex flex-col"
                   >
-                    <div className="aspect-square bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-500">
-                      📦
+                    <div className="aspect-square bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-500 overflow-hidden">
+                      {product.imageUrl ? (
+                        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span>📦</span>
+                      )}
                     </div>
 
                     <div className="p-6 flex flex-col flex-1">
@@ -152,14 +156,14 @@ export default function ShopPage() {
 
                       <div className="mt-4 space-y-3">
                         <div className="text-2xl font-black text-blue-600">
-                          {product.price} zł
+                          {product.price.toFixed(2)} zł
                         </div>
 
                         <button
                           onClick={() => addToCart(product.id)}
                           className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition-all active:scale-95"
                         >
-                          🛒 Dodaj do koszyka
+                          Dodaj
                         </button>
                       </div>
                     </div>

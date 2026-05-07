@@ -82,11 +82,31 @@ export default function CartPage() {
     }
   };
 
+  // 🔥 ZMIANA ILOŚCI
+  const updateQuantity = async (productId: string, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    try {
+      const res = await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: newQuantity }),
+      });
+
+      if (res.ok) {
+        fetchCart(); // refresh
+      }
+    } catch (err) {
+      console.error("Błąd aktualizacji ilości:", err);
+    }
+  };
+
   useEffect(() => {
     fetchCart();
   }, []);
 
-  const total = products.reduce((sum, p) => sum + p.price, 0);
+  const total = products.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 p-8">
@@ -97,7 +117,7 @@ export default function CartPage() {
             href="/" 
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all hover:shadow-lg"
           >
-            ← Powrót do sklepu
+             Powrót do sklepu
           </Link>
         </div>
 
@@ -119,52 +139,84 @@ export default function CartPage() {
               {products.map((p) => (
                 <div
                   key={p.id}
-                  className="flex items-center justify-between bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md hover:shadow-xl transition"
+                  className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md hover:shadow-xl transition flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
                 >
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-3xl rounded-xl">
-                      {p.name || '📦'}
+                  <div className="flex items-center gap-6 flex-1">
+                    <div className="w-20 h-20 bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-2xl rounded-xl overflow-hidden flex-shrink-0">
+                      {p.imageUrl ? (
+                        <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span>📦</span>
+                      )}
                     </div>
 
-                    <div>
+                    <div className="flex-1">
                       <h2 className="font-bold text-lg">{p.name}</h2>
-                      <p className="text-gray-500 text-sm">{p.price}</p>
+                      <p className="text-gray-500 text-sm">Cena za szt: {p.price.toFixed(2)} zł</p>
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <p className="text-xl font-black">{p.price} zł</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    {/* ZMIANA ILOŚCI */}
+                    <div className="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 rounded-lg p-2">
+                      <button
+                        onClick={() => updateQuantity(p.id, p.quantity - 1)}
+                        className="w-8 h-8 flex items-center justify-center rounded font-bold text-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition"
+                      >
+                        −
+                      </button>
+                      <span className="w-8 text-center font-semibold">{p.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(p.id, p.quantity + 1)}
+                        className="w-8 h-8 flex items-center justify-center rounded font-bold text-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition"
+                      >
+                        +
+                      </button>
+                    </div>
 
-                    <button
-                      onClick={() => removeFromCart(p.id)}
-                      className="text-red-500 text-sm mt-2 hover:underline"
-                    >
-                      Usuń
-                    </button>
+                    {/* CENA */}
+                    <div className="text-right">
+                      <p className="text-xl font-black text-green-600">{(p.price * p.quantity).toFixed(2)} zł</p>
+                      <button
+                        onClick={() => removeFromCart(p.id)}
+                        className="text-red-500 text-xs mt-1 hover:text-red-700 font-semibold transition"
+                      >
+                        Usuń z koszyka
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* PODSUMOWANIE */}
-            <div className="mt-10 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-xl font-bold">
-                  Razem:
-                </span>
-
-                <span className="text-2xl font-black text-blue-600">
-                  {total} zł
-                </span>
+            <div className="mt-12 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-slate-800 dark:to-slate-900 p-8 rounded-2xl shadow-lg border-2 border-green-200 dark:border-green-900">
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 dark:text-gray-300">
+                    Liczba artykułów:
+                  </span>
+                  <span className="font-semibold text-lg text-gray-900 dark:text-white">
+                    {products.reduce((sum, p) => sum + p.quantity, 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t border-gray-300 dark:border-slate-700">
+                  <span className="text-xl font-bold text-gray-900 dark:text-white">
+                    Łącznie:
+                  </span>
+                  <span className="text-4xl font-black text-green-600 dark:text-green-400">
+                    {total.toFixed(2)} zł
+                  </span>
+                </div>
               </div>
 
               <button
                 onClick={makeOrder}
                 disabled={isCreatingOrder}
-                className={`w-full py-4 px-6 rounded-xl font-bold text-white text-lg transition-all ${
+                className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all ${
                   isCreatingOrder
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-700 hover:shadow-lg active:scale-95'
+                    ? 'bg-gray-400 cursor-not-allowed text-white'
+                    : 'bg-green-600 hover:bg-green-700 text-white hover:shadow-lg active:scale-95'
                 }`}
               >
                 {isCreatingOrder ? '⏳ Tworzenie zamówienia...' : ' Złóż zamówienie'}
