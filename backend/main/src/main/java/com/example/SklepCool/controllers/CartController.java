@@ -1,6 +1,7 @@
 package com.example.SklepCool.controllers;
 
 import com.example.SklepCool.dto.CartDto;
+import com.example.SklepCool.dto.GuestCartDto;
 import com.example.SklepCool.dto.ProductDto;
 import com.example.SklepCool.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,16 @@ public class CartController {
         return cartService.getCartByUserId(auth);
     }
 
-
     @PostMapping("/{productId}")
     public void addProduct(Authentication auth, @PathVariable UUID productId) {
         cartService.addProduct(auth, productId);
     }
+
+    @PostMapping("/merge")
+    public void mergeGuestCart(Authentication auth, @RequestBody GuestCartDto guestCart) {
+        cartService.mergeGuestCart(auth, guestCart.getItems());
+    }
+
 
     @PutMapping("/decrease/{productId}")
     public void decreaseProduct(Authentication auth, @PathVariable UUID productId) {
