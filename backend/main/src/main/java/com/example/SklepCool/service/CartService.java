@@ -1,6 +1,7 @@
 package com.example.SklepCool.service;
 
 import com.example.SklepCool.dto.CartDto;
+import com.example.SklepCool.dto.GuestCartItemDto;
 import com.example.SklepCool.exception.NotFoundException;
 import com.example.SklepCool.mapper.CartItemMapper;
 import com.example.SklepCool.model.Cart;
@@ -53,6 +54,33 @@ public class CartService {
         item.setQuantity(item.getQuantity() + 1);
         repository.save(cart);
     }
+
+    public void mergeGuestCart(Authentication auth, List<GuestCartItemDto> guestItems) {
+        var userId = userService.getUserIdByAuth(auth);
+        var cart = getCart(userId);
+
+        for (var guestItem : guestItems) {
+            var productId = guestItem.getProductId();
+            var quantity = guestItem.getQuantity();
+
+            var item = cart.getItems().stream()
+                    .filter(i -> i.getProduct().getId().equals(productId))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        var newItem = new CartItem();
+                        newItem.setCart(cart);
+                        newItem.setProduct(productRepository.getReferenceById(productId));
+                        newItem.setQuantity(0);
+                        cart.getItems().add(newItem);
+                        return newItem;
+                    });
+
+            item.setQuantity(item.getQuantity() + quantity);
+        }
+
+        repository.save(cart);
+    }
+
 
     public void decreaseProduct(Authentication auth, UUID productId) {
         var userId = userService.getUserIdByAuth(auth);
