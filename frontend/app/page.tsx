@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Product } from './lib/product';
+import { addToCartWithFeedback } from './lib/guestCart';
 import HeroBanner from './_components/HeroBanner';
 
 
@@ -29,21 +30,14 @@ export default function Home() {
   };
 
   const addToCart = async (productId: string) => {
-    try {
-      const res = await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-      
-      if (res.ok) {
-        alert("Dodano do koszyka!");
-      } else {
-        alert("Zaloguj się, aby dodać produkt do koszyka");
-      }
-    } catch (error) {
-      console.error("Błąd dodawania do koszyka:", error);
-    }
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+    await addToCartWithFeedback({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+    });
   };
 
   useEffect(() => {

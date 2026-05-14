@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Product } from '../lib/product';
+import { addToCartWithFeedback } from '../lib/guestCart';
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -27,23 +28,13 @@ export default function ShopPage() {
     }
   };
 
-  const addToCart = async (productId: string) => {
-    try {
-      const res = await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        alert("✅ Dodano do koszyka!");
-      } else {
-        alert("❌ Zaloguj się, aby dodać produkt do koszyka");
-      }
-    } catch (error) {
-      console.error("Błąd dodawania do koszyka:", error);
-    }
-  };
+  const addToCart = (product: Product) =>
+    addToCartWithFeedback({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+    });
 
   const filterAndSortProducts = () => {
     let filtered = products.filter(p =>
@@ -160,7 +151,7 @@ export default function ShopPage() {
                         </div>
 
                         <button
-                          onClick={() => addToCart(product.id)}
+                          onClick={() => addToCart(product)}
                           className="w-full bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition-all active:scale-95"
                         >
                           Dodaj

@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { GUEST_CART_CHANGED_EVENT, guestCartItemCount } from '../lib/guestCart';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
 
-  const fetchCart = async () => {
+  const refreshCartCount = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:8080/api/v1/cart", {
         method: "GET",
@@ -16,16 +17,27 @@ export default function Header() {
       });
       if (res.ok) {
         const data = await res.json();
-        setCartCount(data.products?.length || 0);
+        const items = data.items ?? [];
+        const count = items.reduce(
+          (sum: number, item: { quantity?: number }) => sum + (item.quantity ?? 0),
+          0
+        );
+        setCartCount(count);
+        return;
       }
-    } catch (error) {
-      console.warn("Koszyk nieosiągalny (prawdopodobnie brak zalogowania)");
+    } catch {
+      // sieć / serwer — spróbuj koszyk gościa
     }
-  };
+    setCartCount(guestCartItemCount());
+  }, []);
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    void refreshCartCount();
+    if (typeof window === 'undefined') return;
+    const onGuest = () => void refreshCartCount();
+    window.addEventListener(GUEST_CART_CHANGED_EVENT, onGuest);
+    return () => window.removeEventListener(GUEST_CART_CHANGED_EVENT, onGuest);
+  }, [refreshCartCount]);
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 shadow-sm">

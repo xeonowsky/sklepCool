@@ -1,22 +1,17 @@
 "use client";
 
+import { addToCartWithFeedback } from "../lib/guestCart";
+
 type Product = {
   id: string;
   name: string;
   price: number;
+  imageUrl?: string;
 };
 
 export default function AddToCartButton({ product }: { product: Product }) {
-
-  const addToCart = async () => {
-    await fetch(`http://localhost:8080/api/v1/cart/${product.id}`, {
-      method: "POST",
-      credentials: "include",
-    });
-  };
-
   return (
-    <button onClick={addToCart}>
+    <button type="button" onClick={() => addToCartWithFeedback(product)}>
       Dodaj do koszyka
     </button>
   );

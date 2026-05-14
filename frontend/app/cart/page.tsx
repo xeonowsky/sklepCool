@@ -4,12 +4,19 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Product } from '../lib/product';
+import {
+  clearGuestCart,
+  guestLinesToProducts,
+  removeProductFromGuestCart,
+  updateGuestCartQuantity,
+} from '../lib/guestCart';
 
 export default function CartPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [isGuestCart, setIsGuestCart] = useState(false);
 
   const makeOrder = async () => {
     setIsCreatingOrder(true);
@@ -24,6 +31,7 @@ export default function CartPage() {
         const data = await res.json();
         alert("✅ Zamówienie utworzone pomyślnie!");
         setProducts([]);
+        if (isGuestCart) clearGuestCart();
         router.push('/');
       } else {
         const errorData = await res.text();
@@ -44,7 +52,6 @@ export default function CartPage() {
       setIsCreatingOrder(false);
     }
   };
-  // 🔥 FETCH KOSZYKA
   const fetchCart = async () => {
     try {
       const res = await fetch("http://localhost:8080/api/v1/cart", {
@@ -52,51 +59,82 @@ export default function CartPage() {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (!res.ok) {
-        setProducts([]);
+      if (res.ok) {
+        const data = await res.json();
+        setIsGuestCart(false);
+        setProducts(
+          (data.items ?? []).map((item: { product: Product; quantity?: number }) => ({
+            ...item.product,
+            quantity: item.quantity ?? 1,
+          }))
+        );
         return;
       }
 
-      const data = await res.json();
-      setProducts(data.items?.map((item: any) => item.product) || []);
+      setIsGuestCart(true);
+      setProducts(guestLinesToProducts());
     } catch (err) {
       console.error("Błąd koszyka:", err);
-      setProducts([]);
+      setIsGuestCart(true);
+      setProducts(guestLinesToProducts());
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 🔥 USUWANIE PRODUKTU
   const removeFromCart = async (productId: string) => {
+    if (isGuestCart) {
+      removeProductFromGuestCart(productId);
+      setProducts(guestLinesToProducts());
+      return;
+    }
     try {
-      
       await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
         method: "DELETE",
         credentials: "include",
       });
-
-      fetchCart(); // refresh
+      fetchCart();
     } catch (err) {
       console.error("Błąd usuwania:", err);
     }
   };
 
-  // 🔥 ZMIANA ILOŚCI
   const updateQuantity = async (productId: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    
-    try {
-      const res = await fetch(`http://localhost:8080/api/v1/cart/${productId}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity: newQuantity }),
-      });
+    if (newQuantity < 1) {
+      await removeFromCart(productId);
+      return;
+    }
 
-      if (res.ok) {
-        fetchCart(); // refresh
+    if (isGuestCart) {
+      updateGuestCartQuantity(productId, newQuantity);
+      setProducts(guestLinesToProducts());
+      return;
+    }
+
+    const current = products.find((p) => p.id === productId)?.quantity ?? 0;
+    const diff = newQuantity - current;
+    if (diff === 0) return;
+
+    const base = "http://localhost:8080/api/v1/cart";
+    try {
+      if (diff > 0) {
+        for (let i = 0; i < diff; i++) {
+          const res = await fetch(`${base}/${productId}`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (!res.ok) break;
+        }
+      } else {
+        for (let i = 0; i < -diff; i++) {
+          const res = await fetch(`${base}/decrease/${productId}`, {
+            method: "PUT",
+            credentials: "include",
+          });
+          if (!res.ok) break;
+        }
       }
+      await fetchCart();
     } catch (err) {
       console.error("Błąd aktualizacji ilości:", err);
     }

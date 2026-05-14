@@ -10,6 +10,7 @@ import {
   AlertCircle,
   CheckCircle,
 } from "react-feather";
+import { mergeGuestCartWithServer } from "../lib/guestCart";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -53,6 +54,8 @@ export default function LoginPage() {
       }
 
       setSuccess("Logowanie pomyślne!");
+
+      await mergeGuestCartWithServer();
 
       window.location.href = "/";
     } catch (err: any) {
