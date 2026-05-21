@@ -1,6 +1,7 @@
 package com.example.SklepCool;
 
 import com.example.SklepCool.config.CartProperties;
+import com.example.SklepCool.config.StripeProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -9,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableJpaAuditing
 @EnableScheduling
-@EnableConfigurationProperties(value = {CartProperties.class})
+@EnableConfigurationProperties(value = {CartProperties.class, StripeProperties.class})
 @SpringBootApplication
 public class SklepCoolApplication {
 

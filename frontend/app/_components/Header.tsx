@@ -7,6 +7,7 @@ import { GUEST_CART_CHANGED_EVENT, guestCartItemCount } from '../lib/guestCart';
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const refreshCartCount = useCallback(async () => {
     try {
@@ -23,11 +24,13 @@ export default function Header() {
           0
         );
         setCartCount(count);
+        setIsLoggedIn(true);
         return;
       }
     } catch {
       // sieć / serwer — spróbuj koszyk gościa
     }
+    setIsLoggedIn(false);
     setCartCount(guestCartItemCount());
   }, []);
 
@@ -56,9 +59,11 @@ export default function Header() {
             <Link href="/kontakt" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition">
               Kontakt
             </Link>
-            <Link href="/login" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Zaloguj się
-            </Link>
+            {!isLoggedIn && (
+              <Link href="/login" className="text-sm font-medium hover:text-blue-600 dark:hover:text-blue-400 transition">
+                Zaloguj się
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -87,9 +92,11 @@ export default function Header() {
             <Link href="/kontakt" className="block px-4 py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-slate-800 rounded-md">
               Kontakt
             </Link>
-            <Link href="/login" className="block px-4 py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-slate-800 rounded-md">
-              Zaloguj się
-            </Link>
+            {!isLoggedIn && (
+              <Link href="/login" className="block px-4 py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-slate-800 rounded-md">
+                Zaloguj się
+              </Link>
+            )}
           </div>
         )}
       </nav>

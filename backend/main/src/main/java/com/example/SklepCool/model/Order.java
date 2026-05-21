@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -28,6 +28,12 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
+
+    @Column(name = "payment_status")
+    private String paymentStatus;
+
+    @Column(name = "stripe_session_id")
+    private String stripeSessionId;
 
     @CreatedDate
     @Column(name = "created_at")

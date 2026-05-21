@@ -29,10 +29,40 @@ export default function CartPage() {
 
       if (res.ok) {
         const data = await res.json();
-        alert("✅ Zamówienie utworzone pomyślnie!");
-        setProducts([]);
+
+        if (Array.isArray(data.notEnoughProducts) && data.notEnoughProducts.length > 0) {
+          alert("❌ Niektóre produkty nie mają wystarczającej ilości na stanie. Zaktualizuj koszyk.");
+          await fetchCart();
+          return;
+        }
+
+        if (!data.orderId) {
+          alert("❌ Nie udało się utworzyć zamówienia. Spróbuj ponownie.");
+          return;
+        }
+
         if (isGuestCart) clearGuestCart();
-        router.push('/');
+
+        const checkoutRes = await fetch(
+          `http://localhost:8080/api/v1/payment/checkout/${data.orderId}`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+
+        if (checkoutRes.ok) {
+          const checkout = await checkoutRes.json();
+          if (checkout.url) {
+            window.location.href = checkout.url;
+            return;
+          }
+          alert("❌ Brak adresu płatności Stripe.");
+        } else {
+          console.error(`Błąd płatności ${checkoutRes.status}`);
+          alert(`❌ Nie udało się rozpocząć płatności (${checkoutRes.status}). Sprawdź konfigurację Stripe.`);
+        }
       } else {
         const errorData = await res.text();
         console.error(`Błąd ${res.status}:`, errorData);

@@ -41,6 +41,7 @@ public class OrderService {
 
         var order = new Order();
         order.setUserId(userId);
+        order.setPaymentStatus("PENDING");
 
         var orderItems = new ArrayList<OrderItem>();
         var availableProducts = new ArrayList<ProductToOrder>();
@@ -101,7 +102,7 @@ public class OrderService {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new CreateOrderDto(available));
+                .body(new CreateOrderDto(order.getId(), available));
     }
 
     private record ProductToOrder(Product product, CartItem cartItem) {

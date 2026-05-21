@@ -41,7 +41,9 @@ public class SpringConfig {
                                 "/api/v1/products",
                                 "/api/v1/products/**",
                                 "/api/v1/order",
-                                "/api/v1/order/**"
+                                "/api/v1/order/**",
+                                "/api/v1/payment",
+                                "/api/v1/payment/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
